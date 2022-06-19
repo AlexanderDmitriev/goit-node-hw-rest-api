@@ -1,5 +1,4 @@
 const express = require("express");
-const contactsData = require("../../models/contacts.json");
 const operations = require("../../models/contacts");
 const Joi = require("joi"); /*  validator */
 
@@ -15,7 +14,7 @@ const schema = Joi.object({
       tlds: { allow: ["com", "net", "ua"] },
     })
     .required(),
-  phone: Joi.string().creditCard().min(10).max(13).required(),
+  phone: Joi.string().min(10).max(30).required(),
 });
 
 router.get("/", async (req, res, next) => {
@@ -41,29 +40,31 @@ router.get("/:contactId", async (req, res, next) => {
     const { contactId } = req.params;
     const result = await operations.getContactById(contactId);
     if (!result) {
-      res.json({
-        status: "error",
-        code: 404,
-        message: `Not found`,
-      });
-      res.json({ status: "success", code: 200, data: { result } });
-    }
+      const error = new Error("Not found");
+      error.status = 404;
+      throw error;
+    };
+    res.json({ status: "success", code: 200, data: { result } });
   } catch (error) {
     next(error);
   }
 });
 
 router.post("/", async (req, res, next) => {
-  const valideResult = schema.validate(req.body);
-  if (valideResult.error) {
-    return res.status(400).json({
-      status: "error",
-      code: 400,
-      message: valideResult.error.message,
-    });
+  try {
+    const valideResult = schema.validate(req.body);
+    if (valideResult.error) {
+      return res.status(400).json({
+        status: "error",
+        code: 400,
+        message: valideResult.error.message,
+      });
+    }
+    const result = await operations.addContact(req.body);
+    res.json({ status: "success", code: 201, data: { result } });
+  } catch (error) {
+    next(error);
   }
-  const result = await operations.addContact(req.body);
-  res.json({ status: "success", code: 201, data: { result } });
 });
 
 router.delete("/:contactId", async (req, res, next) => {
@@ -88,19 +89,40 @@ router.delete("/:contactId", async (req, res, next) => {
 });
 
 router.put("/:contactId", async (req, res, next) => {
-  const { contactId } = req.params;
-  const { name, email, phone } = req.body;
-  const result = contactsData.find(
-    (contactItem) => contactItem.id === contactId
-  );
-  result.name = name;
-  result.email = email;
-  result.phone = phone;
-  res.json({
-    status: "edit operation was successfully",
-    code: 201,
-    data: { result: result },
-  });
+  try {
+    const { contactId } = req.params;
+    if (!req.body) {
+      res.status(400).json({
+        status: "error",
+        code: 400,
+        message: `missing fields`,
+      });
+    }
+    const valideResult = schema.validate(req.body);
+    if (valideResult.error) {
+      return res.status(400).json({
+        status: "error",
+        code: 400,
+        message: valideResult.error.message,
+      });
+    }
+    const result = await operations.updateContact(contactId, req.body);
+
+    if (!result) {
+      res.status(404).json({
+        status: "error",
+        code: 404,
+        message: `Not found`,
+      });
+    }
+    res.json({
+      status: "success",
+      code: 200,
+      data: { result },
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;

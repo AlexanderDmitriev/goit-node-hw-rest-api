@@ -33,11 +33,25 @@ router.post("/", async (req, res, next) => {
 });
 
 router.delete("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  const { contactId } = req.params;
+  const result = prevRes.find((contactItem) => contactItem.id === contactId);
+  res.json({ status: "delete operation was successfully",
+  code: 201,
+  data: { result: result }, });
 });
 
 router.put("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  const { contactId } = req.params;
+  const { name, email, phone } = req.body;
+  const result = prevRes.find((contactItem) => contactItem.id === contactId);
+  result.name = name;
+  result.email = email;
+  result.phone = phone;
+  res.json({
+    status: "edit operation was successfully",
+    code: 201,
+    data: { result: result },
+  });
 });
 
 module.exports = router;

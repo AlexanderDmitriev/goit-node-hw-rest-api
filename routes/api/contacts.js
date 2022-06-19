@@ -2,7 +2,6 @@ const express = require("express");
 const contactsData = require("../../models/contacts.json");
 const operations = require("../../models/contacts");
 const Joi = require("joi"); /*  validator */
-const validate = require("./validation");
 
 /* Создаём новую "страницу" в сервере */
 const router = express.Router();
@@ -44,10 +43,10 @@ router.get("/:contactId", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   const valideResult = schema.validate(req.body);
   if (valideResult.error) {
-    return res.json({
+    return res.status(400).json({
       status: "error",
       code: 400,
-      message: valideResult.error,
+      message: valideResult.error.message,
     });
   }
   const result = await operations.addContact(req.body);

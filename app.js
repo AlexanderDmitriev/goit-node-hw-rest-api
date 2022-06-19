@@ -9,7 +9,9 @@ const app = express(); /* вызывыем объект как функцию д
 
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
+/* Логирование */
 app.use(logger(formatsLogger));
+
 /* Разрешаем кросс-доменные запросы */
 app.use(cors());
 app.use(express.json());

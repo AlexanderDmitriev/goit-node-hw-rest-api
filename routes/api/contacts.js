@@ -19,25 +19,38 @@ const schema = Joi.object({
 });
 
 router.get("/", async (req, res, next) => {
-  const result = await operations.listContacts();
-  res.json({
-    status: "success",
-    code: 200,
-    data: { result },
-  });
+  try {
+    const result = await operations.listContacts();
+    if (!result) {
+      const error = new Error("Not found");
+      error.status = 404;
+      throw error;
+    }
+    res.json({
+      status: "success",
+      code: 200,
+      data: { result },
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/:contactId", async (req, res, next) => {
-  const { contactId } = req.params;
-  const result = await operations.getContactById(contactId);
-  if (!result) {
-    res.json({
-      status: "error",
-      code: 404,
-      message: `Not found`,
-    });
+  try {
+    const { contactId } = req.params;
+    const result = await operations.getContactById(contactId);
+    if (!result) {
+      res.json({
+        status: "error",
+        code: 404,
+        message: `Not found`,
+      });
+      res.json({ status: "success", code: 200, data: { result } });
+    }
+  } catch (error) {
+    next(error);
   }
-  res.json({ status: "success", code: 200, data: { result } });
 });
 
 router.post("/", async (req, res, next) => {
@@ -54,13 +67,24 @@ router.post("/", async (req, res, next) => {
 });
 
 router.delete("/:contactId", async (req, res, next) => {
-  const { contactId } = req.params;
-  const removeContact = await operations.removeContact(contactId);
-  res.json({
-    status: "delete operation was successfully",
-    code: 201,
-    data: { removeContact },
-  });
+  try {
+    const { contactId } = req.params;
+    const removingContact = await operations.removeContact(contactId);
+    if (!removingContact) {
+      res.status(404).json({
+        status: "error",
+        code: 404,
+        message: `Not found`,
+      });
+    }
+    res.json({
+      status: "success",
+      code: 200,
+      message: "contact deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.put("/:contactId", async (req, res, next) => {

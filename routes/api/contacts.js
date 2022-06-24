@@ -1,25 +1,14 @@
 const express = require("express");
 const operations = require("../../models/contacts");
-const Joi = require("joi"); /*  validator */
+const joiSchema = require("../../models");
+const { Contact } = require("../../models");
 
 /* Создаём новую "страницу" в сервере */
 const router = express.Router();
 
-// validation
-const schema = Joi.object({
-  name: Joi.string().alphanum().min(3).max(30).required(),
-  email: Joi.string()
-    .email({
-      minDomainSegments: 2,
-      tlds: { allow: ["com", "net", "ua"] },
-    })
-    .required(),
-  phone: Joi.string().min(10).max(30).required(),
-});
-
 router.get("/", async (req, res, next) => {
   try {
-    const result = await operations.listContacts();
+    const result = await Contact.find({});
     if (!result) {
       const error = new Error("Not found");
       error.status = 404;
@@ -43,7 +32,7 @@ router.get("/:contactId", async (req, res, next) => {
       const error = new Error("Not found");
       error.status = 404;
       throw error;
-    };
+    }
     res.json({ status: "success", code: 200, data: { result } });
   } catch (error) {
     next(error);
@@ -52,7 +41,7 @@ router.get("/:contactId", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    const valideResult = schema.validate(req.body);
+    const valideResult = joiSchema.validate(req.body);
     if (valideResult.error) {
       return res.status(400).json({
         status: "error",
@@ -98,7 +87,7 @@ router.put("/:contactId", async (req, res, next) => {
         message: `missing fields`,
       });
     }
-    const valideResult = schema.validate(req.body);
+    const valideResult = joiSchema.validate(req.body);
     if (valideResult.error) {
       return res.status(400).json({
         status: "error",

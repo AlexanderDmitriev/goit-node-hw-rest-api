@@ -2,7 +2,8 @@
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const contactsRouter = require("./routes/api/contacts");
 
@@ -28,14 +29,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 });
 
-const DB_HOST =
-  "mongodb+srv://DmitrievAlexander:dCa4vJDZmb3GQbcn@cluster0.ec0kvfb.mongodb.net/db-contacts?retryWrites=true&w=majority";
-mongoose
-  .connect(DB_HOST)
-  .then(() => console.log("Database connection successful"))
-  .catch(error => {
-    console.log(`Database connection failture: ${error.message}`);
-    process.exit(1);
-  });
+/* const DB_HOST =
+  "mongodb+srv://DmitrievAlexander:dCa4vJDZmb3GQbcn@cluster0.ec0kvfb.mongodb.net/db-contacts?retryWrites=true&w=majority"; */
 
 module.exports = app;

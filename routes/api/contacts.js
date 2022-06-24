@@ -1,5 +1,4 @@
 const express = require("express");
-const operations = require("../../models/contacts");
 const joiSchema = require("../../models");
 const { Contact } = require("../../models");
 
@@ -27,7 +26,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await operations.getContactById(contactId);
+    const result = await Contact.findById(contactId);
     if (!result) {
       const error = new Error("Not found");
       error.status = 404;
@@ -49,7 +48,7 @@ router.post("/", async (req, res, next) => {
         message: valideResult.error.message,
       });
     }
-    const result = await operations.addContact(req.body);
+    const result = await Contact.create(req.body);
     res.json({ status: "success", code: 201, data: { result } });
   } catch (error) {
     next(error);
@@ -59,7 +58,7 @@ router.post("/", async (req, res, next) => {
 router.delete("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const removingContact = await operations.removeContact(contactId);
+    const removingContact = await Contact.findByIdAndRemove(contactId);
     if (!removingContact) {
       res.status(404).json({
         status: "error",
@@ -95,7 +94,7 @@ router.put("/:contactId", async (req, res, next) => {
         message: valideResult.error.message,
       });
     }
-    const result = await operations.updateContact(contactId, req.body);
+    const result = await Contact.findByIdAndUpdate(contactId, req.body);
 
     if (!result) {
       res.status(404).json({

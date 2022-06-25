@@ -1,5 +1,7 @@
 const express = require("express");
 const {Contact,joiSchema} = require("../../models");
+/* const {addContact} = require('./addContact');
+const {ctrlWrapper} = require('./ctrlWrapper'); */
 
 /* Создаём новую "страницу" в сервере */
 const router = express.Router();
@@ -21,6 +23,8 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
+
+/* router.get("/",ctrlWrapper(addContact)); */
 
 router.get("/:contactId", async (req, res, next) => {
   try {

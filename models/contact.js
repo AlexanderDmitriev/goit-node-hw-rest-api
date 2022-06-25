@@ -31,8 +31,9 @@ const joiSchema = Joi.object({
       })
       .required(),
     phone: Joi.string().min(10).max(30).required(),
+    favorite:Joi.bool()
   });
 
-const Contact = model("contacts", contactSchema);
+const Contact = model("contact", contactSchema);
 
 module.exports = { Contact,joiSchema };

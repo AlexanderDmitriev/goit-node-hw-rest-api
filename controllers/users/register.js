@@ -1,5 +1,6 @@
 const { User, joiRegisterSchema } = require("../../models/user");
 const { Conflict } = require("http-errors");
+const bcrypt= require("bcryptjs");
 
 const register = async (req, res, next) => {
   try {
@@ -16,7 +17,8 @@ const register = async (req, res, next) => {
     if (user) {
       throw new Conflict("409 error");
     }
-    await User.create({ email, password, subscription });
+    const hashPassword = bcrypt.compareSync(password,bcrypt.genSaltSync(10));
+    await User.create({ email, password:hashPassword, subscription });
     res.status(201).json({
       status: "success",
       code: 201,

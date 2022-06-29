@@ -1,0 +1,29 @@
+const { User, joiLoginSchema } = require("../../models/user");
+const { Unauthorized } = require("http-errors");
+const bcrypt = require("bcryptjs");
+
+const login = async (req, res, next) => {
+  try {
+    const valideResult = joiLoginSchema.validate(req.body);
+    if (valideResult.error) {
+      return res.status(400).json({
+        status: "error",
+        code: 400,
+        message: valideResult.error.message,
+      });
+    }
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Unauthorized("401 error");
+    }
+    const passCompare = bcrypt.compareSync(password, user.password);
+    if (!passCompare) {
+      throw new Unauthorized("401 error");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = login;

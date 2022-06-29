@@ -17,10 +17,10 @@ const userSchema = Schema(
       enum: ["starter", "pro", "business"],
       default: "starter",
     },
-    token: {
+    /* token: {
       type: String,
       default: null,
-    },
+    }, */
   },
   { versionKey: false, timestamps: true }
 );
@@ -34,10 +34,19 @@ const joiRegisterSchema = Joi.object({
         tlds: { allow: ["com", "net", "ua"] },
       })
       .required(),
-      subscription: Joi.string().required(),
-      token:Joi.string()
+      subscription: Joi.string().required()
+  });
+
+  const joiLoginSchema = Joi.object({
+    password: Joi.string().alphanum().min(6).required(),
+    email: Joi.string()
+      .email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "net", "ua"] },
+      })
+      .required(),
   });
 
   const User = model("user",userSchema);
 
-  module.exports = {User, joiRegisterSchema}
+  module.exports = {User, joiRegisterSchema,joiLoginSchema}

@@ -17,7 +17,7 @@ const register = async (req, res, next) => {
     if (user) {
       throw new Conflict("409 error");
     }
-    const hashPassword = bcrypt.compareSync(password,bcrypt.genSaltSync(10));
+    const hashPassword = bcrypt.hashSync(password,bcrypt.genSaltSync(10));
     await User.create({ email, password:hashPassword, subscription });
     res.status(201).json({
       status: "success",

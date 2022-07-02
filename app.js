@@ -23,7 +23,7 @@ app.use(express.json());
 /* Путь, с которого начинаются наши маршруты в api/contacts.js */
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/user", currentUserRouter);
+app.use("/api/users/current", currentUserRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

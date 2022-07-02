@@ -5,6 +5,7 @@ const auth = require("../../middlewares/auth");
 /* Создаём новую "страницу" в сервере */
 const router = express.Router();
 
-router.get("/current", auth, ctrl.getCurrentUser);
+router.get("/", auth, ctrl.getCurrentUser);
+router.patch("/update", auth, ctrl.updateSubscription);
 
 module.exports = router;

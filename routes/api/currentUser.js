@@ -1,12 +1,10 @@
 const express = require("express");
-const ctrl = require("../../controllers/users");
+/* const ctrl = require("../../controllers/currentUser"); */
 /* const auth = require("../../middlewares/auth"); */
 
 /* Создаём новую "страницу" в сервере */
 const router = express.Router();
 
-router.post("/signup", ctrl.register);
-router.post("/login", ctrl.login);
-/* router.get("/logout", auth, ctrl.logot); */
+/* router.get("/current", auth, ctrl.getCurrent); */
 
 module.exports = router;

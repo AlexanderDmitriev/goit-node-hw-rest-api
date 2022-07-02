@@ -7,6 +7,7 @@ dotenv.config();
 
 const contactsRouter = require("./routes/api/contacts");
 const usersRouter = require("./routes/api/users");
+const currentUserRouter = require("./routes/api/currentUser");
 
 const app = express(); /* вызывыем объект как функцию для создания сервера */
 
@@ -22,6 +23,7 @@ app.use(express.json());
 /* Путь, с которого начинаются наши маршруты в api/contacts.js */
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/user", currentUserRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

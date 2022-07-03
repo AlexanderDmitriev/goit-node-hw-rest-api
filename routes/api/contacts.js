@@ -1,14 +1,15 @@
 const express = require("express");
 const ctrl = require("../../controllers/contacts");
+const auth = require("../../middlewares/auth");
 
 /* Создаём новую "страницу" в сервере */
 const router = express.Router();
 
-router.get("/", ctrl.getAllContacts);
+router.get("/", auth, ctrl.getAllContacts);
 
 router.get("/:contactId", ctrl.getById);
 
-router.post("/", ctrl.addContact);
+router.post("/", auth,  ctrl.addContact);
 
 router.put("/:contactId", ctrl.updateContact);
 

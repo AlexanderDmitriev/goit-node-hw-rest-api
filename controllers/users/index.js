@@ -5,5 +5,5 @@ const logout = require("./logout");
 module.exports = {
   register,
   login,
-  logout
+  logout,
 };

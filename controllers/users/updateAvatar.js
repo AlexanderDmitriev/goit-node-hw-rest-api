@@ -13,15 +13,12 @@ const updateAvatar = async (req, res, next) => {
   try {
     const resultUpload = path.join(avatarDir, imageName);
     await fs.rename(tempUpload, resultUpload);
+    // Resize
+    const imageAvatar = await Jimp.read(resultUpload);
+    const resizeAvatar = await imageAvatar.resize(250,250);
+    await resizeAvatar.write(resultUpload);
+    
     const avatarURL = path.join("public", "avatars", imageName);
-
-    Jimp.read(avatarURL)
-      .then((image) => {
-        return image.resize(250, 250); // resize
-      })
-      .catch((err) => {
-        console.error(err);
-      });
     await User.findByIdAndUpdate(req.user._id, { avatarURL });
 
     res.json({ avatarURL });

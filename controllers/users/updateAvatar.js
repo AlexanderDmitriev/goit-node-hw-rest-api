@@ -2,6 +2,7 @@ const { User } = require("../../models/user");
 const path = require("path");
 const fs = require("fs/promises");
 const { Unauthorized } = require("http-errors");
+const Jimp = require("jimp");
 
 const avatarDir = path.join(__dirname, "../../", "public", "avatars");
 
@@ -13,8 +14,16 @@ const updateAvatar = async (req, res, next) => {
     const resultUpload = path.join(avatarDir, imageName);
     await fs.rename(tempUpload, resultUpload);
     const avatarURL = path.join("public", "avatars", imageName);
+
+    Jimp.read(avatarURL)
+      .then((image) => {
+        return image.resize(250, 250); // resize
+      })
+      .catch((err) => {
+        console.error(err);
+      });
     await User.findByIdAndUpdate(req.user._id, { avatarURL });
-    
+
     res.json({ avatarURL });
   } catch (error) {
     await fs.unlink(tempUpload);

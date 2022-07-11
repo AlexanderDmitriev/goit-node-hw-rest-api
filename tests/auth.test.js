@@ -4,6 +4,15 @@ require("dotenv").config();
 const app = require("../app");
 const { User } = require("../models/user");
 const gravatar = require("gravatar");
+const {
+  describe,
+  test,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+  afterEach,
+} = require("@jest/globals");
 
 const { DB_HOST } = process.env;
 
@@ -25,20 +34,20 @@ describe("auth test", () => {
     const newUser = {
       email: "test@mail.com",
       password: "111111",
-      avatarURL : gravatar.url("test@mail.com")
+      avatarURL: gravatar.url("test@mail.com"),
     };
-    await User.create(newUser);
+    const user = await User.create(newUser);
     const loginUser = {
       email: "test@mail.com",
       password: "111111",
-      avatarURL : gravatar.url("test@mail.com")
+      avatarURL: gravatar.url("test@mail.com"),
     };
 
-    const response = await   request(app).post("api/users/login").send(loginUser);
+    const response = await request(app).post("api/users/login").send(loginUser);
     expect(response.statusCode).toBe(200);
-    const {body} = response;
+    const { body } = response;
     expect(body.token).toByTruthy();
-    const {token} = await User.findById(user._id);
+    const { token } = await User.findById(user._id);
     expect(token).toBe(token);
   });
 });

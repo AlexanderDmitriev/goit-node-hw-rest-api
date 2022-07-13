@@ -1,24 +1,18 @@
 const mongoose = require("mongoose");
 const request = require("supertest");
 require("dotenv").config();
-const app = require("../app");
-const { User } = require("../models/user");
+const app = require("../../app");
+const { User } = require("../../models/user");
 const gravatar = require("gravatar");
-const {
-  describe,
-  test,
-  expect,
-  beforeAll,
-  afterAll,
-  beforeEach,
-  afterEach,
-} = require("@jest/globals");
+/* const { describe, test, expect } = require("@jest/globals"); */
 
 const { DB_HOST } = process.env;
 
 describe("auth test", () => {
   let server;
-  beforeAll(() => (server = app.listen(3000)));
+  beforeAll(() => {
+    server = app.listen(3000);
+  });
   afterAll(() => server.close());
 
   beforeEach((done) => {
@@ -43,7 +37,10 @@ describe("auth test", () => {
       avatarURL: gravatar.url("test@mail.com"),
     };
 
-    const response = await request(app).post("api/users/login").send(loginUser);
+    const response = await request(app)
+      .post("/api/users/login")
+      .send(loginUser);
+    console.log(response.statusCode);
     expect(response.statusCode).toBe(200);
     const { body } = response;
     expect(body.token).toByTruthy();

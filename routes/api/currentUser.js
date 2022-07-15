@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.get("/", auth, ctrl.getCurrentUser);
 router.get("/verify/:verificationToken", ctrl.verifyEmail);
+router.post("/verify/", ctrl.resendVerifyEmail);
 router.patch("/update", auth, ctrl.updateSubscription);
 
 module.exports = router;

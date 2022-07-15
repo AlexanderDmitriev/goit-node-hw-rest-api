@@ -1,6 +1,6 @@
 const { User, joiEmailSchema } = require("../../models/user");
-const { sendEmail } = require("../users/nodemailer");
-const { NotFound } = require("http-errors");
+const { sendEmail } = require("./nodemailer");
+const { NotFound, BadRequest } = require("http-errors");
 
 const resendVerifyEmail = async (req, res, next) => {
   try {
@@ -23,11 +23,7 @@ const resendVerifyEmail = async (req, res, next) => {
       html: `<a target="_blank" href="http://localhost:3000//users/verify/:${user.verificationToken}">Подтвердить email</a>`,
     };
     if (user.verify) {
-      return res.status(400).json({
-        status: "error verification",
-        code: 400,
-        message: "Verification has already been passed",
-      });
+      throw BadRequest("Verification has already been passed");
     }
     await sendEmail(mail);
     res.json({

@@ -13,12 +13,6 @@ const nodemailerconfig = {
 };
 
 const transporter = nodemailer.createTransport(nodemailerconfig);
-/* const email = {
-  to: "some@mail.com",
-  from: "alex9110077@meta.ua",
-  subject: "test mail",
-  html: "<p>TEST</p>",
-}; */
 
 const sendEmail = async (data) => {
   const email = { ...data, from: "alex9110077@meta.ua" };

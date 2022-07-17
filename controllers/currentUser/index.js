@@ -3,6 +3,7 @@ const updateSubscription = require("./updateSubscription");
 
 
 module.exports = {
-    getCurrentUser,
-    updateSubscription
+  getCurrentUser,
+  updateSubscription,
+
 };

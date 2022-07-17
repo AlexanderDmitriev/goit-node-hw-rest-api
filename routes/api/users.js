@@ -9,6 +9,8 @@ const router = express.Router();
 router.post("/signup", ctrl.register);
 router.post("/login", ctrl.login);
 router.get("/logout", auth, ctrl.logout);
+router.get("/verify/:verificationToken", ctrl.verifyEmail);
+router.post("/verify/", ctrl.resendVerifyEmail);
 router.patch("/avatars", auth, upload.single("avatar"), ctrl.updateAvatar);
 
 module.exports = router;

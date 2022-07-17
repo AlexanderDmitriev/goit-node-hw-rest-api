@@ -21,37 +21,53 @@ const userSchema = Schema(
       type: String,
       default: null,
     },
-    avatarURL:{
-      type:String,
-      required: true
-    }
-    
+    avatarURL: {
+      type: String,
+      required: true,
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, "Verify token is required"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
 
 // validation
 const joiRegisterSchema = Joi.object({
-    password: Joi.string().alphanum().min(6).required(),
-    email: Joi.string()
-      .email({
-        minDomainSegments: 2,
-        tlds: { allow: ["com", "net", "ua"] },
-      })
-      .required(),
-      subscription: Joi.string().required()
-  });
+  password: Joi.string().alphanum().min(6).required(),
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net", "ua"] },
+    })
+    .required(),
+  subscription: Joi.string().required(),
+});
 
-  const joiLoginSchema = Joi.object({
-    password: Joi.string().alphanum().min(6).required(),
-    email: Joi.string()
-      .email({
-        minDomainSegments: 2,
-        tlds: { allow: ["com", "net", "ua"] },
-      })
-      .required(),
-  });
+const joiLoginSchema = Joi.object({
+  password: Joi.string().alphanum().min(6).required(),
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net", "ua"] },
+    })
+    .required(),
+});
 
-  const User = model("user",userSchema);
+const joiEmailSchema = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net", "ua"] },
+    })
+    .required(),
+});
 
-  module.exports = {User, joiRegisterSchema,joiLoginSchema}
+const User = model("user", userSchema);
+
+module.exports = { User, joiRegisterSchema, joiLoginSchema, joiEmailSchema };
